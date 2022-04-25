@@ -57,7 +57,7 @@ void Dht11::slt_timeout()
         temp=data[0]+data[1]*0.01;
         hum=data[2];
         ui->temperatureLabel->setText(QString::number(temp)+"℃");
-        ui->humidityLabel->setText(QString::number(hum)+"."+QString::number(data[3])+"%");
+        ui->humidityLabel->setText(QString::number(hum,"f",2)+"%");
         printf("温度%.2f℃,湿度:%.2f%%\r\n",temp,hum);
     }
 
