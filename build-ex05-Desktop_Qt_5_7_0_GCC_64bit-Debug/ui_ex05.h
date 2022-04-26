@@ -44,6 +44,9 @@ public:
     QPushButton *GetDataButton;
     QTextEdit *textEdit;
     QPushButton *pushButton;
+    QGroupBox *groupBox_4;
+    QLineEdit *lmdEdit;
+    QPushButton *lmdButton;
 
     void setupUi(QWidget *ex05)
     {
@@ -85,7 +88,7 @@ public:
         label_4->setGeometry(QRect(20, 190, 101, 51));
         groupBox_2 = new QGroupBox(ex05);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        groupBox_2->setGeometry(QRect(400, 10, 391, 461));
+        groupBox_2->setGeometry(QRect(400, 120, 391, 371));
         tableView = new QTableView(groupBox_2);
         tableView->setObjectName(QStringLiteral("tableView"));
         tableView->setGeometry(QRect(10, 30, 371, 421));
@@ -101,6 +104,15 @@ public:
         pushButton = new QPushButton(groupBox_3);
         pushButton->setObjectName(QStringLiteral("pushButton"));
         pushButton->setGeometry(QRect(190, 130, 111, 31));
+        groupBox_4 = new QGroupBox(ex05);
+        groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
+        groupBox_4->setGeometry(QRect(400, 10, 391, 101));
+        lmdEdit = new QLineEdit(groupBox_4);
+        lmdEdit->setObjectName(QStringLiteral("lmdEdit"));
+        lmdEdit->setGeometry(QRect(20, 30, 181, 61));
+        lmdButton = new QPushButton(groupBox_4);
+        lmdButton->setObjectName(QStringLiteral("lmdButton"));
+        lmdButton->setGeometry(QRect(220, 30, 121, 61));
 
         retranslateUi(ex05);
 
@@ -125,6 +137,8 @@ public:
         groupBox_3->setTitle(QApplication::translate("ex05", "\346\234\254\345\234\260\346\225\260\346\215\256", 0));
         GetDataButton->setText(QApplication::translate("ex05", "\351\207\207\351\233\206\346\225\260\346\215\256", 0));
         pushButton->setText(QApplication::translate("ex05", "\346\270\205\351\231\244\346\225\260\346\215\256", 0));
+        groupBox_4->setTitle(QApplication::translate("ex05", "SDT\347\256\227\346\263\225\347\201\265\346\225\217\345\272\246\350\260\203\350\212\202", 0));
+        lmdButton->setText(QApplication::translate("ex05", "\350\260\203\350\212\202", 0));
     } // retranslateUi
 
 };

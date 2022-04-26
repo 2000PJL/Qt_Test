@@ -21,12 +21,18 @@
 #define GEC6818_ADC_IN0 _IOR('A', 1, unsigned long)
 #define GEC6818_ADC_IN1 _IOR('A', 2, unsigned long)
 
-#define SDT_MAX_DOUBLE      220.00
-#define Temp_E              0.4
-#define Hum_E               1.0
-#define Dist_E              10
-#define ADC_E               5
+//#define SDT_MAX_DOUBLE      220.00
+//#define Temp_E              0.4
+//#define Hum_E               1.0
+//#define Dist_E              10
+//#define ADC_E               5
 
+double lmd = 1;
+double SDT_MAX_DOUBLE     = 220.00*lmd;
+double Temp_E             = 0.4*lmd;
+double Hum_E              = 1.0*lmd;
+double Dist_E             = 10*lmd;
+double ADC_E              = 5*lmd;
 
 float up_gateTemp = -SDT_MAX_DOUBLE;
 float down_gateTemp = SDT_MAX_DOUBLE;
@@ -62,7 +68,7 @@ ex05::ex05(QWidget *parent) :
 {
     ui->setupUi(this);
     timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()),this, SLOT(slt_timeout()));
+    connect(timer, SIGNAL(timeout()),this, SLOT(slt_timeout1()));
     serialPort.setPortName("/dev/ttySAC2");
     tableView_Init();
     if(!serialPort.open(QIODevice::ReadWrite))
@@ -102,7 +108,7 @@ void ex05::tableView_Init()
 
     //表头信息显示居左
     ui->tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-    ui->tableView->setColumnWidth(0,50);
+    ui->tableView->setColumnWidth(0,60);
     ui->tableView->setColumnWidth(1,80);
     ui->tableView->setColumnWidth(2,80);
     ui->tableView->setColumnWidth(3,70);
@@ -253,7 +259,7 @@ void ex05::on_connectServeButton_clicked()
 }
 
 
-void ex05::slt_timeout()
+void ex05::slt_timeout1()
 {
     QString strWiFi;
     ioctl(dht11_fd, GEC6818_GET_DHTDATA, &sensor_data[0]);
@@ -422,3 +428,14 @@ unsigned int ex05::compressADC(unsigned int currentADC)
     return last_stored_adc;
 }
 
+
+void ex05::on_lmdButton_clicked()
+{
+    lmd = ui->lmdEdit->text().toDouble();
+
+    SDT_MAX_DOUBLE     = 220.00*lmd;
+    Temp_E             = 0.4*lmd;
+    Hum_E              = 1.0*lmd;
+    Dist_E             = 10*lmd;
+    ADC_E              = 5*lmd;
+}

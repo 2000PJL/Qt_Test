@@ -116,13 +116,13 @@ KeyBoardWidget::~KeyBoardWidget()
 
 void KeyBoardWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    //if (event->buttons() && Qt::LeftButton)
-   // {
+    if (event->buttons() && Qt::LeftButton)
+    {
 
-       //move(0, QPoint(event->globalPos() - m_currentPos).y());
-   //     this->repaint();
-      //  event->accept();
-    //}
+       move(0, QPoint(event->globalPos() - m_currentPos).y());
+        this->repaint();
+        event->accept();
+    }
     QWidget::mouseMoveEvent(event);
 }
 

@@ -18,7 +18,7 @@ public:
 
 private slots:
     void tableView_Init();
-    void slt_timeout();
+    void slt_timeout1();
     char* getCurrentDateTime();
     void slt_serialportRead();
     void sleep(int msec);
@@ -33,6 +33,8 @@ private slots:
     void on_connectServeButton_clicked();
 
     void on_pushButton_clicked();
+
+    void on_lmdButton_clicked();
 
 private:
     Ui::ex05 *ui;
