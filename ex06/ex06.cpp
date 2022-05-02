@@ -1,5 +1,5 @@
-#include "ex05.h"
-#include "ui_ex05.h"
+#include "ex06.h"
+#include "ui_ex06.h"
 #include "QtSerialPort"
 #include <QDebug>
 #include <QTime>
@@ -21,11 +21,6 @@
 #define GEC6818_ADC_IN0 _IOR('A', 1, unsigned long)
 #define GEC6818_ADC_IN1 _IOR('A', 2, unsigned long)
 
-//#define SDT_MAX_DOUBLE      220.00
-//#define Temp_E              0.4
-//#define Hum_E               1.0
-//#define Dist_E              10
-//#define ADC_E               5
 
 double lmd = 1;
 double SDT_MAX_DOUBLE     = 220.00*lmd;
@@ -62,9 +57,9 @@ int fd;
 int dataIndex=0;
 char *time1;
 
-ex05::ex05(QWidget *parent) :
+ex06::ex06(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ex05)
+    ui(new Ui::ex06)
 {
     ui->setupUi(this);
     timer = new QTimer(this);
@@ -80,19 +75,19 @@ ex05::ex05(QWidget *parent) :
         serialPort.setDataBits(QSerialPort::Data8);
         serialPort.setStopBits(QSerialPort::OneStop);
         serialPort.setBaudRate(QSerialPort::Baud115200);
-        connect(&serialPort,&QSerialPort::readyRead,this,&ex05::slt_serialportRead);
+        connect(&serialPort,&QSerialPort::readyRead,this,&ex06::slt_serialportRead);
     }
 
 
 }
 
-ex05::~ex05()
+ex06::~ex06()
 {
     delete ui;
 }
 
 
-void ex05::tableView_Init()
+void ex06::tableView_Init()
 {
     showDataTableModel = new QStandardItemModel();
 
@@ -117,7 +112,10 @@ void ex05::tableView_Init()
     ui->tableView->verticalHeader()->hide();
 }
 
-void ex05::table_add_row(float temp, float hum, int distance, unsigned int adc_val)
+
+
+
+void ex06::table_add_row(float temp, float hum, int distance, unsigned int adc_val)
 {
     time1 = getCurrentDateTime();
     showDataTableModel->setItem(dataIndex, 0, new QStandardItem(QString::number(dataIndex+1)));
@@ -129,11 +127,17 @@ void ex05::table_add_row(float temp, float hum, int distance, unsigned int adc_v
     dataIndex++;
 
     char kk[30];
-    sprintf(kk,"%.2f,%.2f,%d,%d",temp,hum,distance,adc_val);
+    sprintf(kk,"#,%d,%.2f,%.2f,%d,$",distance,temp,hum,adc_val);
     ui->textEdit->append(kk);
+    serialPort.write(kk);
+
 }
 
-void ex05::on_GetDataButton_clicked()
+
+
+
+
+void ex06::on_GetDataButton_clicked()
 {
    static char checked=1;
    if(checked)
@@ -178,7 +182,7 @@ void ex05::on_GetDataButton_clicked()
 
 
 
-char* ex05::getCurrentDateTime()
+char* ex06::getCurrentDateTime()
 {
     time_t t = time(0);
     static char dateTime[64];
@@ -186,7 +190,7 @@ char* ex05::getCurrentDateTime()
     return dateTime;
 }
 
-void ex05::slt_serialportRead()
+void ex06::slt_serialportRead()
 {
     QString str(serialPort.readAll());
     qDebug()<<"serial data is "<<str;
@@ -209,7 +213,7 @@ void ex05::slt_serialportRead()
     }
 }
 
-void ex05::on_connectWIFIButton_clicked()
+void ex06::on_connectWIFIButton_clicked()
 {
     if(ui->connectWIFIButton->text()=="连接WIFI")
     {
@@ -228,14 +232,14 @@ void ex05::on_connectWIFIButton_clicked()
     }
 }
 
-void ex05::sleep(int msec)
+void ex06::sleep(int msec)
 {
     QTime dieTime = QTime::currentTime().addMSecs(msec);
     while(QTime::currentTime()<dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents,100);
 }
 
-void ex05::on_connectServeButton_clicked()
+void ex06::on_connectServeButton_clicked()
 {
     if(ui->connectServeButton->text()=="连接服务器")
     {
@@ -259,7 +263,7 @@ void ex05::on_connectServeButton_clicked()
 }
 
 
-void ex05::slt_timeout1()
+void ex06::slt_timeout1()
 {
     QString strWiFi;
     ioctl(dht11_fd, GEC6818_GET_DHTDATA, &sensor_data[0]);
@@ -299,32 +303,32 @@ void ex05::slt_timeout1()
             transFlagFirst = 0;
         }
 
-        if(currentTemp != ex05::compressTemp(temp))
+        if(currentTemp != ex06::compressTemp(temp))
         {
-            currentTemp = ex05::compressTemp(temp);
-            strWiFi = "temp:" +QString::number(currentTemp,'f',2)+" C"+"\r\n";
-            serialPort.write(strWiFi.toLocal8Bit());
+            currentTemp = ex06::compressTemp(temp);
+//            strWiFi = "temp:" +QString::number(currentTemp,'f',2)+" C"+"\r\n";
+//            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
         }
-        if(currentHum != ex05::compressHum(hum))
+        if(currentHum != ex06::compressHum(hum))
         {
-            currentHum = ex05::compressHum(hum);
-            strWiFi = "hum:" + QString::number(currentHum,'f',2) + "%" +"\r\n";
-            serialPort.write(strWiFi.toLocal8Bit());
+            currentHum = ex06::compressHum(hum);
+//            strWiFi = "hum:" + QString::number(currentHum,'f',2) + "%" +"\r\n";
+//            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
         }
-        if(currentDist != ex05::compressDist(distance))
+        if(currentDist != ex06::compressDist(distance))
         {
-            currentDist = ex05::compressDist(distance);
-            strWiFi = "distance:" + QString::number(currentDist,'f',2) + "cm" +"\r\n";
-            serialPort.write(strWiFi.toLocal8Bit());
+            currentDist = ex06::compressDist(distance);
+//            strWiFi = "distance:" + QString::number(currentDist,'f',2) + "cm" +"\r\n";
+//            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
         }
-        if(currentADC != ex05::compressADC(adc_val))
+        if(currentADC != ex06::compressADC(adc_val))
         {
-            currentADC = ex05::compressADC(adc_val);
-            strWiFi = "adc:" + QString::number(currentADC,'f',2) + "%" +"\r\n";
-            serialPort.write(strWiFi.toLocal8Bit());
+            currentADC = ex06::compressADC(adc_val);
+//            strWiFi = "adc:" + QString::number(currentADC,'f',2) + "%" +"\r\n";
+//            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
         }
 
@@ -334,13 +338,13 @@ void ex05::slt_timeout1()
 
 }
 
-void ex05::on_pushButton_clicked()
+void ex06::on_pushButton_clicked()
 {
     ui->textEdit->clear();
 }
 
 
-float ex05::compressTemp(float currentTemp)
+float ex06::compressTemp(float currentTemp)
 {
     static float last_stored_temp = currentTemp;	//最近保存的点
     now_up = float(currentTemp-last_stored_temp-Temp_E) / 1.0;
@@ -362,7 +366,7 @@ float ex05::compressTemp(float currentTemp)
     return last_stored_temp;
 }
 
-float ex05::compressHum(float currentHum)
+float ex06::compressHum(float currentHum)
 {
     static float last_stored_hum = currentHum;	//最近保存的点
     now_up = float(currentHum-last_stored_hum-Hum_E) / 1.0;
@@ -384,7 +388,7 @@ float ex05::compressHum(float currentHum)
     return last_stored_hum;
 }
 
-double ex05::compressDist(double currentDist)
+double ex06::compressDist(double currentDist)
 {
     static double last_stored_dist = currentDist;	//最近保存的点
     now_up = double(currentDist-last_stored_dist-Dist_E) / 1.0;
@@ -406,7 +410,7 @@ double ex05::compressDist(double currentDist)
     return last_stored_dist;
 }
 
-unsigned int ex05::compressADC(unsigned int currentADC)
+unsigned int ex06::compressADC(unsigned int currentADC)
 {
     static unsigned int last_stored_adc = currentADC;	//最近保存的点
     now_up = float(currentADC-last_stored_adc-ADC_E) / 1.0;
@@ -429,7 +433,7 @@ unsigned int ex05::compressADC(unsigned int currentADC)
 }
 
 
-void ex05::on_lmdButton_clicked()
+void ex06::on_lmdButton_clicked()
 {
     lmd = ui->lmdEdit->text().toDouble()/100.0;
 

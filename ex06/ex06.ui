@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ex05</class>
- <widget class="QWidget" name="ex05">
+ <class>ex06</class>
+ <widget class="QWidget" name="ex06">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ex05</string>
+   <string>ex06</string>
   </property>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
