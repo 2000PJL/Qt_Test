@@ -21,6 +21,7 @@
 #define GEC6818_ADC_IN0 _IOR('A', 1, unsigned long)
 #define GEC6818_ADC_IN1 _IOR('A', 2, unsigned long)
 
+char kk[30];
 
 double lmd = 1;
 double SDT_MAX_DOUBLE     = 220.00*lmd;
@@ -126,10 +127,9 @@ void ex06::table_add_row(float temp, float hum, int distance, unsigned int adc_v
     showDataTableModel->setItem(dataIndex, 5, new QStandardItem(time1));
     dataIndex++;
 
-    char kk[30];
+//    char kk[30];
     sprintf(kk,"#,%d,%.2f,%.2f,%d,$",distance,temp,hum,adc_val);
     ui->textEdit->append(kk);
-    serialPort.write(kk);
 
 }
 
@@ -292,14 +292,15 @@ void ex06::slt_timeout1()
     {
         if(transFlagFirst)//only for first transmission
         {
-            strWiFi = "hum:" +QString::number(currentTemp,'f',2)+" C"+"\r\n";
-            serialPort.write(strWiFi.toLocal8Bit());
-            strWiFi = "temp:" + QString::number(currentHum,'f',2) + "%" +"\r\n";
-            serialPort.write(strWiFi.toLocal8Bit());
-            strWiFi = "distance:" + QString::number(currentDist,'f',2) + "cm" +"\r\n";
-            serialPort.write(strWiFi.toLocal8Bit());
-            strWiFi = "adc:" + QString::number(currentADC,'f',2) + "%" +"\r\n";
-            serialPort.write(strWiFi.toLocal8Bit());
+//            strWiFi = "hum:" +QString::number(currentTemp,'f',2)+" C"+"\r\n";
+//            serialPort.write(strWiFi.toLocal8Bit());
+//            strWiFi = "temp:" + QString::number(currentHum,'f',2) + "%" +"\r\n";
+//            serialPort.write(strWiFi.toLocal8Bit());
+//            strWiFi = "distance:" + QString::number(currentDist,'f',2) + "cm" +"\r\n";
+//            serialPort.write(strWiFi.toLocal8Bit());
+//            strWiFi = "adc:" + QString::number(currentADC,'f',2) + "%" +"\r\n";
+//            serialPort.write(strWiFi.toLocal8Bit());
+            table_add_row(currentTemp, currentHum, currentDist, currentADC);
             transFlagFirst = 0;
         }
 
@@ -309,6 +310,7 @@ void ex06::slt_timeout1()
 //            strWiFi = "temp:" +QString::number(currentTemp,'f',2)+" C"+"\r\n";
 //            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
+            serialPort.write(kk);
         }
         if(currentHum != ex06::compressHum(hum))
         {
@@ -316,6 +318,7 @@ void ex06::slt_timeout1()
 //            strWiFi = "hum:" + QString::number(currentHum,'f',2) + "%" +"\r\n";
 //            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
+            serialPort.write(kk);
         }
         if(currentDist != ex06::compressDist(distance))
         {
@@ -323,6 +326,7 @@ void ex06::slt_timeout1()
 //            strWiFi = "distance:" + QString::number(currentDist,'f',2) + "cm" +"\r\n";
 //            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
+            serialPort.write(kk);
         }
         if(currentADC != ex06::compressADC(adc_val))
         {
@@ -330,6 +334,7 @@ void ex06::slt_timeout1()
 //            strWiFi = "adc:" + QString::number(currentADC,'f',2) + "%" +"\r\n";
 //            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
+            serialPort.write(kk);
         }
 
     }
@@ -341,6 +346,7 @@ void ex06::slt_timeout1()
 void ex06::on_pushButton_clicked()
 {
     ui->textEdit->clear();
+    showDataTableModel->removeColumns(0,showDataTableModel->rowCount());
 }
 
 
@@ -433,13 +439,12 @@ unsigned int ex06::compressADC(unsigned int currentADC)
 }
 
 
-void ex06::on_lmdButton_clicked()
-{
-    lmd = ui->lmdEdit->text().toDouble()/100.0;
 
-    SDT_MAX_DOUBLE     = 220.00*lmd;
-    Temp_E             = 0.4*lmd;
-    Hum_E              = 1.0*lmd;
-    Dist_E             = 10*lmd;
-    ADC_E              = 5*lmd;
+
+void ex06::on_ChangeEButton_clicked()
+{
+    Temp_E = ui->TempEdit->text().toDouble();
+    Hum_E = ui->HumEdit->text().toDouble();
+    Dist_E = ui->DistEdit->text().toDouble();
+    ADC_E = ui->ADCEdit->text().toDouble();
 }

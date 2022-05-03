@@ -36,6 +36,8 @@ private slots:
 
     void on_lmdButton_clicked();
 
+    void on_ChangeEButton_clicked();
+
 private:
     Ui::ex06 *ui;
     QTimer* timer;
