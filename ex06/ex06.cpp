@@ -28,7 +28,7 @@ double SDT_MAX_DOUBLE     = 220.00*lmd;
 double Temp_E             = 0.4*lmd;
 double Hum_E              = 1.0*lmd;
 double Dist_E             = 10*lmd;
-double ADC_E              = 5*lmd;
+int ADC_E              = 5*lmd;
 
 float up_gateTemp = -SDT_MAX_DOUBLE;
 float down_gateTemp = SDT_MAX_DOUBLE;
@@ -49,7 +49,7 @@ int transFlagFirst = 1;
 unsigned char sensor_data[4];
 float temp = 0.0, hum = 0.0;
 int distance = 0;
-unsigned int adc_val = 0.0;
+int adc_val = 0.0;
 char sr04_str[10];
 
 
@@ -90,6 +90,7 @@ ex06::~ex06()
 
 void ex06::tableView_Init()
 {
+    dataIndex = 0;
     showDataTableModel = new QStandardItemModel();
 
     showDataTableModel->setColumnCount(2);
@@ -116,7 +117,7 @@ void ex06::tableView_Init()
 
 
 
-void ex06::table_add_row(float temp, float hum, int distance, unsigned int adc_val)
+void ex06::table_add_row(float temp, float hum, int distance, int adc_val)
 {
     time1 = getCurrentDateTime();
     showDataTableModel->setItem(dataIndex, 0, new QStandardItem(QString::number(dataIndex+1)));
@@ -127,7 +128,6 @@ void ex06::table_add_row(float temp, float hum, int distance, unsigned int adc_v
     showDataTableModel->setItem(dataIndex, 5, new QStandardItem(time1));
     dataIndex++;
 
-//    char kk[30];
     sprintf(kk,"#,%d,%.2f,%.2f,%d,$",distance,temp,hum,adc_val);
     ui->textEdit->append(kk);
 
@@ -258,7 +258,6 @@ void ex06::on_connectServeButton_clicked()
         sleep(1000);
         cmdType = AT_CIPCLOSE;
         serialPort.write("AT+CIPCLOSE\r\n");
-        //ui->connectServeButton->setText("连接服务器");
     }
 }
 
@@ -279,7 +278,6 @@ void ex06::slt_timeout1()
         adc_val = 100;
     }
 
-    table_add_row(temp, hum, distance, adc_val);
     qDebug("temperature = %.2lf C, humidity = %.2lf, distance = %dcm, adc_vol: %d%%\n", temp,hum,distance,adc_val);
 
     static float currentTemp = temp;
@@ -292,14 +290,6 @@ void ex06::slt_timeout1()
     {
         if(transFlagFirst)//only for first transmission
         {
-//            strWiFi = "hum:" +QString::number(currentTemp,'f',2)+" C"+"\r\n";
-//            serialPort.write(strWiFi.toLocal8Bit());
-//            strWiFi = "temp:" + QString::number(currentHum,'f',2) + "%" +"\r\n";
-//            serialPort.write(strWiFi.toLocal8Bit());
-//            strWiFi = "distance:" + QString::number(currentDist,'f',2) + "cm" +"\r\n";
-//            serialPort.write(strWiFi.toLocal8Bit());
-//            strWiFi = "adc:" + QString::number(currentADC,'f',2) + "%" +"\r\n";
-//            serialPort.write(strWiFi.toLocal8Bit());
             table_add_row(currentTemp, currentHum, currentDist, currentADC);
             transFlagFirst = 0;
         }
@@ -347,6 +337,8 @@ void ex06::on_pushButton_clicked()
 {
     ui->textEdit->clear();
     showDataTableModel->removeColumns(0,showDataTableModel->rowCount());
+    tableView_Init();
+
 }
 
 
@@ -446,5 +438,5 @@ void ex06::on_ChangeEButton_clicked()
     Temp_E = ui->TempEdit->text().toDouble();
     Hum_E = ui->HumEdit->text().toDouble();
     Dist_E = ui->DistEdit->text().toDouble();
-    ADC_E = ui->ADCEdit->text().toDouble();
+    ADC_E = ui->ADCEdit->text().toInt();
 }

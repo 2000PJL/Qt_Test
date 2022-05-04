@@ -33,9 +33,6 @@ private slots:
     void on_connectServeButton_clicked();
 
     void on_pushButton_clicked();
-
-    void on_lmdButton_clicked();
-
     void on_ChangeEButton_clicked();
 
 private:
