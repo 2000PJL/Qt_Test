@@ -264,7 +264,7 @@ void ex06::on_connectServeButton_clicked()
 
 void ex06::slt_timeout1()
 {
-    QString strWiFi;
+
     ioctl(dht11_fd, GEC6818_GET_DHTDATA, &sensor_data[0]);
     ioctl(adc_fd, GEC6818_ADC_IN1, &adc_val);
     ioctl(sr04_fd, GEC6818_C7_STA, &distance);
@@ -429,7 +429,6 @@ unsigned int ex06::compressADC(unsigned int currentADC)
     }
     return last_stored_adc;
 }
-
 
 
 
