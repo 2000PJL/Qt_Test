@@ -22,7 +22,7 @@ private slots:
     char* getCurrentDateTime();
     void slt_serialportRead();
     void sleep(int msec);
-    void table_add_row(float temp, float hum, int distance, unsigned int adc_val);
+    void table_add_row(float temp, float hum, int distance,  int adc_val);
     float compressTemp(float currentTemp);
     float compressHum(float currentHum);
     double compressDist(double currentDist);

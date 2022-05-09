@@ -20,6 +20,7 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
+    sleep(1);
     ui->textBrowser->setText("");
     ui->textBrowser->setText("欢迎你，彭俊龙228");
 }
